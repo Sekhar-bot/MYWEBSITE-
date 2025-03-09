@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Article{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Add a New Article</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary mt-3">Add Article</button>
+    </form>
+    <a href="{% url 'home' %}" class="btn btn-secondary mt-3">Back to Home</a>
+</div>
+{% endblock %}
