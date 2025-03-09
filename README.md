@@ -24,8 +24,8 @@ AI News Aggregator is a Django-based web application that fetches news articles 
 
 ### 1. Clone the repository
 ```sh
-git clone https://github.com/your-username/ai-news-aggregator.git
-cd ai-news-aggregator
+git clone https://github.com/Sekhar-bot/MYWEBSITE-
+cd project1
 ```
 
 ### 2. Create a virtual environment and activate it
