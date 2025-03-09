@@ -1,70 +1,73 @@
 # AI News Aggregator
 
-## Description
-AI News Aggregator is a Django-based web application that fetches news articles from various sources, processes them using AI for summarization, categorization, and sentiment analysis, and presents them in a user-friendly interface.
+## Overview
+AI News Aggregator is a Django-powered platform that collects news from various sources, categorizes them using AI, and provides users with a personalized news feed. It also features text-to-speech (TTS) for reading news aloud and sentiment analysis for insights into trending topics.
 
 ## Features
-- Fetches news from multiple sources
-- AI-powered summarization and categorization
-- Personalized news feed based on user preferences
-- Sentiment analysis of news articles
-- Text-to-speech (TTS) for reading articles aloud
-- Image support for news articles
+- AI-driven news summarization and categorization
 - User authentication for personalized feeds
+- Image support for news articles
+- Text-to-speech (TTS) functionality
 - Trending topic visualizations
-- Responsive UI using Bootstrap
+- Secure authentication system
+- Django-powered backend with a modern frontend (Next.js/Vue.js planned)
 
-## Tech Stack
-- **Backend:** Django, MySQL  
-- **Frontend:** HTML, CSS, Bootstrap (Future plans: Next.js/Vue.js)  
-- **AI Features:** NLP for summarization & sentiment analysis  
-- **Deployment:** Firebase (planned for app & website)  
-
-## Setup Instructions
-
-### 1. Clone the repository
-```sh
+## Installation
+### Clone the Repository
+```bash
 git clone https://github.com/Sekhar-bot/MYWEBSITE-
 cd project1
 ```
 
-### 2. Create a virtual environment and activate it
-```sh
-python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
-```
-
-### 3. Install dependencies
-```sh
+### Install Dependencies
+```bash
 pip install -r requirements.txt
 ```
 
-### 4. Run migrations
-```sh
+### Set Up Database
+```bash
 python manage.py migrate
 ```
 
-### 5. Start the development server
-```sh
+### Create Superuser (Optional)
+```bash
+python manage.py createsuperuser
+```
+
+### Run Development Server
+```bash
 python manage.py runserver
 ```
 
-### 6. Access the application
-Open your browser and go to:  
-`http://127.0.0.1:8000/`
+## Using Ngrok for Public Access
+If you want to expose your local Django server publicly using Ngrok:
 
-## Future Enhancements
-- Implement a Next.js/Vue.js frontend for a more dynamic user experience.
-- Add real-time news updates using WebSockets.
-- Improve AI models for better summarization and categorization.
-- Deploy the application on Firebase for better scalability.
+1. Install Ngrok (if not already installed):
+   ```bash
+   wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+   unzip ngrok-stable-linux-amd64.zip
+   ```
+2. Start Ngrok for port 8000:
+   ```bash
+   ./ngrok http 8000
+   ```
+3. Copy the provided public URL and use it to access the site externally.
+
+## Running the Project with Docker (Optional)
+To run the project in a containerized environment:
+```bash
+docker-compose up --build
+```
+
+## API Endpoints
+- `GET /` - Home page with the latest news
+- `POST /add-article/` - Add a new article (requires authentication)
+- `GET /login/` - User login
+- `GET /logout/` - User logout (redirects to home)
 
 ## Contributing
-Contributions are welcome! Feel free to fork the repository, make improvements, and submit a pull request.
+Feel free to submit issues and pull requests! Contributions are welcome.
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Contact
-For any queries or collaborations, feel free to reach out at `your-email@example.com`. 🚀
+MIT License
 
