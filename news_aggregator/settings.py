@@ -143,12 +143,10 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '1851-152-59-236-226.ngrok-free.app']  # Add your ngrok URL here
+import os
 
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://1851-152-59-236-226.ngrok-free.app",  # Add your ngrok URL here
-]
+ALLOWED_HOSTS = ["mywebsite-lz5n.onrender.com", "localhost"]
+CSRF_TRUSTED_ORIGINS = ["https://mywebsite-lz5n.onrender.com"]
 
 
 
