@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'logout.css' %}">
+
+<div class="container text-center mt-5">
+    <h2>You have been logged out.</h2>
+    <p>Thank you for using AI News Aggregator.</p>
+    <div class="mt-4">
+        <a href="{% url 'home' %}" class="btn btn-primary">Home</a>
+        <a href="{% url 'login' %}" class="btn btn-success">Login Again</a>
+    </div>
+</div>
+{% endblock %}

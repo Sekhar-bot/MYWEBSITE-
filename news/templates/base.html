@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI News Aggregator BY Sekhar{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    
+    <style>
+        /* Enhanced styling for the entire site */
+        :root {
+            --primary-color: #3d5afe;
+            --secondary-color: #0026ca;
+            --accent-color: #8187ff;
+            --light-bg: #f8f9fa;
+            --dark-bg: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+        
+        .nav-link {
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            background: var(--dark-bg);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* Card styling */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+        }
+        
+        /* Ad carousel styling */
+        .scrolling-wrapper {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            padding: 10px 0;
+        }
+
+        .scrolling-wrapper::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .scrolling-wrapper::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,.2);
+            border-radius: 10px;
+        }
+
+        .ad-card {
+            flex: 0 0 auto;
+            width: 280px;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: white;
+            transition: transform 0.2s ease;
+        }
+        
+        .ad-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .ad-link {
+            display: flex;
+            height: 100%;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .ad-img {
+            width: 40%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ad-content {
+            width: 60%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .ad-placeholder {
+            width: 100%;
+            background-color: #f8f9fa;
+        }
+        
+        /* Category badges */
+        .category-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        /* Sponsored content label */
+        .sponsored-label {
+            font-size: 0.7rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">📰 AI News</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown" role="button" data-bs-toggle="dropdown">
+                            Categories
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'category_view' 'Technology' %}">Technology</a></li>
+                            <li><a class="dropdown-item" href="{% url 'category_view' 'Science' %}">Science</a></li>
+                            <li><a class="dropdown-item" href="{% url 'category_view' 'Health' %}">Health</a></li>
+                            <li><a class="dropdown-item" href="{% url 'category_view' 'Business' %}">Business</a></li>
+                            <li><a class="dropdown-item" href="{% url 'category_view' 'Sports' %}">Sports</a></li>
+                            <li><a class="dropdown-item" href="{% url 'category_view' 'Entertainment' %}">Entertainment</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- About Page Link -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/projects/' %}active{% endif %}" href="{% url 'projects' %}">📂 Projects</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">ℹ️ About</a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/add-article/' %}active{% endif %}" href="{% url 'add_article' %}">➕ Add Article</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'profile' %}">👤 Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="{% url 'logout' %}">🚪 Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/login/' %}active{% endif %}" href="{% url 'login' %}">🔑 Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Optional Top Ad Space - Used in home.html -->
+    {% block top_ad_space %}{% endblock %}
+
+    <!-- Main Content -->
+    <div class="container my-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Optional Bottom Ad Space - Used in home.html -->
+    {% block bottom_ad_space %}{% endblock %}
+
+    <!-- Footer -->
+    <footer class="footer mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-md-start text-center mb-3 mb-md-0">
+                    <p class="mb-0">&copy; 2025 AI News Aggregator | Built with ❤️ BY Sekhar</p>
+                </div>
+                <div class="col-md-6 text-md-end text-center">
+                    <a href="#" class="text-white me-3">Terms</a>
+                    <a href="#" class="text-white me-3">Privacy</a>
+                    <a href="#" class="text-white">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Common JavaScript -->
+    <script>
+    function getCSRFToken() {
+        return document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1] || '';
+    }
+    
+    // Track ad clicks
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".ad-link").forEach(link => {
+            link.addEventListener("click", function(e) {
+                // Get the ad ID from the data attribute
+                let adId = this.getAttribute("data-ad-id");
+                if (adId) {
+                    fetch(`/ad-click/${adId}/`, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": getCSRFToken(),
+                            "Content-Type": "application/json"
+                        }
+                    });
+                    // Let the link work normally
+                }
+            });
+        });
+    });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,613 @@
+{% extends 'base.html' %}
+
+{% block title %}AI News Aggregator BY Sekhar{% endblock %}
+
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'home.css' %}">
+<style>
+    /* Layout redesign styles */
+    .hero-section {
+        background-color: #f8f9fa;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #eaeaea;
+    }
+    
+    .featured-articles {
+        margin-bottom: 2rem;
+    }
+    
+    .article-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .article-card {
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+    }
+    
+    .article-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .article-image-container {
+        height: 180px;
+        overflow: hidden;
+    }
+    
+    .article-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    
+    .article-card:hover .article-image {
+        transform: scale(1.05);
+    }
+    
+    .article-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .sponsored-section {
+        background-color: #f0f2f5;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+    }
+    
+    .interaction-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+    
+    .category-badge {
+        background-color: #6c757d;
+        color: white;
+        border-radius: 4px;
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    /* Mobile optimizations */
+    @media (max-width: 767px) {
+        .article-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .hero-section {
+            padding: 1rem 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8 col-lg-7">
+                <h1 class="display-5 fw-bold">📰 AI News Aggregator</h1>
+                <p class="lead">Stay updated with the latest AI news and technological breakthroughs</p>
+            </div>
+            <div class="col-md-4 col-lg-5 d-none d-md-block">
+                <img src="{% static 'images/ai-news-illustration.svg' %}" alt="AI News" class="img-fluid" onerror="this.style.display='none'">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Section -->
+{% if top_article %}
+<div class="container featured-articles mb-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Featured Story</h2>
+            <div class="card shadow-sm">
+                <div class="row g-0">
+                    <div class="col-md-5">
+                        {% if top_article.image %}
+                        <img src="{{ top_article.image.url }}" class="img-fluid h-100 w-100" style="object-fit: cover;" alt="{{ top_article.title }}" loading="lazy">
+                        {% else %}
+                        <div class="bg-light h-100 d-flex align-items-center justify-content-center">
+                            <span class="text-muted">No image available</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="category-badge">{{ top_article.category }}</span>
+                                <small class="text-muted">🕒 {{ top_article.published_at|date:"M d, Y" }}</small>
+                            </div>
+                            <h3 class="card-title">{{ top_article.title }}</h3>
+                            <p class="card-text">{{ top_article.content|truncatewords:50 }}</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <a href="{% url 'read_more' top_article.id %}" class="btn btn-primary">Read Full Story</a>
+                                <small class="text-muted">🖊️ By {{ top_article.author.username|default:"Unknown" }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Main Content -->
+<div class="container">
+    <h2 class="mb-4">Latest Stories</h2>
+    
+    {% if articles %}
+    <div class="article-grid">
+        {% for article in articles %}
+        <div class="card article-card shadow-sm">
+            <div class="article-image-container">
+                {% if article.image %}
+                <img src="{{ article.image.url }}" class="article-image" alt="{{ article.title }}" loading="lazy">
+                {% else %}
+                <div class="bg-light h-100 d-flex align-items-center justify-content-center">
+                    <span class="text-muted">No image available</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-body d-flex flex-column">
+                <div class="article-meta">
+                    <span class="category-badge">{{ article.category }}</span>
+                    <small class="text-muted">🕒 {{ article.published_at|date:"M d, Y" }}</small>
+                </div>
+                <h5 class="card-title">{{ article.title }}</h5>
+                <p class="card-text flex-grow-1">{{ article.content|truncatewords:20 }}</p>
+                
+                <div class="interaction-bar">
+                    <a href="{% url 'read_more' article.id %}" class="btn btn-sm btn-outline-primary">Read More</a>
+                    <small class="text-muted">🖊️ {{ article.author.username|default:"Unknown" }}</small>
+                </div>
+                
+                <div class="d-flex justify-content-between mt-2">
+                    <button class="btn btn-sm btn-outline-success like-btn" data-article-id="{{ article.id }}">
+                        👍 <span id="like-count-{{ article.id }}">{{ article.likes.count }}</span>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger dislike-btn" data-article-id="{{ article.id }}">
+                        👎 <span id="dislike-count-{{ article.id }}">{{ article.dislikes.count }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        {% if forloop.counter|divisibleby:2 and not forloop.last and inline_ads %}
+        <div class="sponsored-section">
+            <p class="text-center fw-bold mb-3">SPONSORED CONTENT</p>
+            
+            {% with ad=inline_ads|random %}
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <a href="{{ ad.link }}" target="_blank" data-ad-id="{{ ad.id }}">
+                        <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="img-fluid rounded" loading="lazy">
+                    </a>
+                </div>
+                <div class="col-md-8">
+                    <h5>{{ ad.title }}</h5>
+                    <p>{{ ad.description }}</p>
+                    <a href="{{ ad.link }}" class="btn btn-sm btn-outline-primary" target="_blank" data-ad-id="{{ ad.id }}">Learn More</a>
+                </div>
+            </div>
+            {% endwith %}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+        </div>
+        <h4>No articles available</h4>
+        <p class="text-muted">Be the first to add an article to the platform!</p>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'add_article' %}" class="btn btn-primary">Add Article</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block top_ad_space %}
+{% if top_ads %}
+<div class="container-fluid bg-light py-3 mb-4">
+    <div class="container">
+        <p class="sponsored-label mb-1 text-center">SPONSORED</p>
+        <div class="ad-carousel">
+            <div class="scrolling-wrapper" id="top-ad-carousel">
+                {% for ad in top_ads %}
+                <div class="ad-card mx-2">
+                    <a href="{{ ad.link }}" target="_blank" class="ad-link" data-ad-id="{{ ad.id }}">
+                        <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="ad-img" loading="lazy">
+                        <div class="ad-content">
+                            <h6>{{ ad.title }}</h6>
+                            <small class="text-muted">Sponsored</small>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="carousel-controls d-none d-md-block">
+                <button class="btn btn-sm btn-outline-secondary carousel-prev" data-target="#top-ad-carousel">❮</button>
+                <button class="btn btn-sm btn-outline-secondary carousel-next" data-target="#top-ad-carousel">❯</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block bottom_ad_space %}
+{% if bottom_ads %}
+<div class="container-fluid bg-light py-4 mt-5">
+    <div class="container">
+        <h5 class="text-center mb-4">Recommended For You</h5>
+        <div class="row">
+            {% for ad in bottom_ads %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <a href="{{ ad.link }}" target="_blank" data-ad-id="{{ ad.id }}">
+                        <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="card-img-top" loading="lazy">
+                    </a>
+                    <div class="card-body">
+                        <h6 class="card-title">{{ ad.title }}</h6>
+                        <p class="card-text small">{{ ad.description|truncatechars:100 }}</p>
+                        <a href="{{ ad.link }}" class="btn btn-sm btn-outline-primary" target="_blank" data-ad-id="{{ ad.id }}">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<!-- JavaScript for Like/Dislike Functionality and WebSocket -->
+<script>
+// WebSocket connection with error handling
+// WebSocket connection with error handling
+function setupWebSocket() {
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const socket = new WebSocket(`${wsProtocol}//${window.location.host}/ws/notifications/`);
+    
+    socket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        showNotification(data.message);
+    };
+    
+    socket.onclose = function(e) {
+        console.log('WebSocket connection closed, reconnecting...', e.reason);
+        setTimeout(setupWebSocket, 5000); // Reconnect after 5 seconds
+    };
+    
+    socket.onerror = function(err) {
+        console.error('WebSocket error:', err);
+        setTimeout(setupWebSocket, 10000); // Try again after a longer delay
+    };
+}
+
+// Function to show notifications
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification-toast position-fixed bottom-0 end-0 m-3';
+    notification.style.zIndex = '1050';
+    notification.innerHTML = `
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">🔔 New Notification</strong>
+                <button type="button" class="btn-close" onclick="this.closest('.notification-toast').remove()"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.querySelector('.toast').classList.remove('show');
+            setTimeout(() => notification.remove(), 500);
+        }
+    }, 5000);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    setupWebSocket();
+    
+    // Rest of your initialization code...
+});
+
+// Helper function to get CSRF token
+function getCSRFToken() {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith('csrftoken=')) {
+            return cookie.substring('csrftoken='.length);
+        }
+    }
+    return '';
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Setup WebSocket
+    setupWebSocket();
+    
+    // Like functionality
+    document.querySelectorAll(".like-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            const articleId = this.getAttribute("data-article-id");
+            updateInteraction(articleId, 'like');
+        });
+    });
+
+    // Dislike functionality
+    document.querySelectorAll(".dislike-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            const articleId = this.getAttribute("data-article-id");
+            updateInteraction(articleId, 'dislike');
+        });
+    });
+
+    // Unified function to handle interactions with debounce
+    let interactionTimeout = null;
+    function updateInteraction(articleId, action) {
+        // Clear previous timeout to debounce rapid clicks
+        if (interactionTimeout) clearTimeout(interactionTimeout);
+        
+        interactionTimeout = setTimeout(() => {
+            fetch(`/${action}/${articleId}/`, { 
+                method: "POST", 
+                headers: { 
+                    "X-CSRFToken": getCSRFToken(),
+                    "Content-Type": "application/json" 
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById(`like-count-${articleId}`).textContent = data.likes;
+                document.getElementById(`dislike-count-${articleId}`).textContent = data.dislikes;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }, 300); // 300ms debounce
+    }
+
+    // Carousel controls
+    document.querySelectorAll('.carousel-prev').forEach(button => {
+        button.addEventListener('click', function() {
+            const target = document.querySelector(this.dataset.target);
+            target.scrollBy({ left: -300, behavior: 'smooth' });
+        });
+    });
+    
+    document.querySelectorAll('.carousel-next').forEach(button => {
+        button.addEventListener('click', function() {
+            const target = document.querySelector(this.dataset.target);
+            target.scrollBy({ left: 300, behavior: 'smooth' });
+        });
+    });
+    
+    // Implement lazy loading for ad carousels using IntersectionObserver
+    const carousels = document.querySelectorAll('.scrolling-wrapper');
+    
+    if ('IntersectionObserver' in window) {
+        const carouselObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // If carousel is visible, setup auto-scroll
+                    setupCarouselScroll(entry.target);
+                    // Stop observing once we've set it up
+                    carouselObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            rootMargin: '100px'
+        });
+        
+        carousels.forEach(carousel => {
+            carouselObserver.observe(carousel);
+        });
+    }
+    
+    // Function to setup auto-scroll for carousels
+    function setupCarouselScroll(carousel) {
+        // Only setup auto-scroll if the carousel has overflow
+        if (carousel.scrollWidth > carousel.clientWidth) {
+            let scrolling = false;
+            let scrollAmount = 0;
+            let scrollMax = carousel.scrollWidth - carousel.clientWidth;
+            let scrollDirection = 1;
+            let scrollSpeed = 0.5;
+            let lastTimestamp = 0;
+            
+            function autoScroll(timestamp) {
+                if (!scrolling) return;
+                
+                // Calculate elapsed time
+                const delta = timestamp - lastTimestamp;
+                if (lastTimestamp !== 0 && delta > 0) {
+                    scrollAmount += scrollDirection * scrollSpeed * (delta / 16);
+                    
+                    // Check boundaries
+                    if (scrollAmount >= scrollMax) {
+                        scrollAmount = scrollMax;
+                        scrollDirection = -1;
+                    } else if (scrollAmount <= 0) {
+                        scrollAmount = 0;
+                        scrollDirection = 1;
+                    }
+                    
+                    carousel.scrollLeft = scrollAmount;
+                }
+                
+                lastTimestamp = timestamp;
+                requestAnimationFrame(autoScroll);
+            }
+            
+            // Start auto-scroll on hover
+            carousel.addEventListener('mouseenter', () => {
+                scrolling = false;
+            });
+            
+            // Stop auto-scroll when mouse leaves
+            carousel.addEventListener('mouseleave', () => {
+                scrolling = true;
+                lastTimestamp = 0;
+                requestAnimationFrame(autoScroll);
+            });
+            
+            // Start auto-scroll initially
+            scrolling = true;
+            requestAnimationFrame(autoScroll);
+            
+            // Pause auto-scroll on touch devices
+            carousel.addEventListener('touchstart', () => {
+                scrolling = false;
+            });
+        }
+    }
+});
+// Improved WebSocket implementation with better error handling and reconnection
+function setupWebSocket() {
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${wsProtocol}//${window.location.host}/ws/notifications/`;
+    console.log(`Connecting to WebSocket at: ${wsUrl}`);
+    
+    const socket = new WebSocket(wsUrl);
+    
+    socket.onopen = function(event) {
+        console.log("WebSocket connection established successfully!");
+        // Send initial ping to verify connection
+        socket.send(JSON.stringify({ type: 'ping', message: 'Connection verification' }));
+    };
+    
+    socket.onmessage = function(event) {
+        console.log("Message received:", event.data);
+        try {
+            const data = JSON.parse(event.data);
+            if (data.message) {
+                showNotification(data.message);
+            }
+        } catch (error) {
+            console.error("Error parsing WebSocket message:", error);
+        }
+    };
+    
+    socket.onclose = function(event) {
+        console.log(`WebSocket connection closed (Code: ${event.code}, Reason: ${event.reason || 'No reason provided'})`);
+        // Use exponential backoff for reconnection
+        const reconnectDelay = calculateReconnectDelay(window.wsReconnectAttempts || 0);
+        window.wsReconnectAttempts = (window.wsReconnectAttempts || 0) + 1;
+        
+        console.log(`Attempting to reconnect in ${reconnectDelay/1000} seconds...`);
+        setTimeout(setupWebSocket, reconnectDelay);
+    };
+    
+    socket.onerror = function(error) {
+        console.error("WebSocket error occurred:", error);
+        // Don't attempt reconnection here - onclose will be called after onerror
+    };
+    
+    // Store socket in a global variable for access from other functions
+    window.notificationSocket = socket;
+    
+    // Reset reconnection counter when successfully connected
+    window.wsReconnectAttempts = 0;
+    
+    return socket;
+}
+
+// Calculate reconnection delay with exponential backoff (capped at 30 seconds)
+function calculateReconnectDelay(reconnectAttempts) {
+    const baseDelay = 1000; // 1 second
+    const maxDelay = 30000; // 30 seconds
+    const delay = baseDelay * Math.pow(1.5, Math.min(reconnectAttempts, 10));
+    return Math.min(delay, maxDelay);
+}
+
+// Function to show notifications (your existing function)
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification-toast position-fixed bottom-0 end-0 m-3';
+    notification.style.zIndex = '1050';
+    notification.innerHTML = `
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">🔔 New Notification</strong>
+                <button type="button" class="btn-close" onclick="this.closest('.notification-toast').remove()"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.querySelector('.toast').classList.remove('show');
+            setTimeout(() => notification.remove(), 500);
+        }
+    }, 5000);
+}
+
+// Initialize WebSocket when the DOM is loaded
+document.addEventListener("DOMContentLoaded", function() {
+    setupWebSocket();
+    
+    // Rest of your initialization code...
+    
+    // Optionally, add a manual reconnect button for testing
+    /*
+    const reconnectButton = document.createElement('button');
+    reconnectButton.textContent = 'Reconnect WebSocket';
+    reconnectButton.style.position = 'fixed';
+    reconnectButton.style.bottom = '10px';
+    reconnectButton.style.left = '10px';
+    reconnectButton.onclick = setupWebSocket;
+    document.body.appendChild(reconnectButton);
+    */
+});
+</script>
+{% endblock %}
