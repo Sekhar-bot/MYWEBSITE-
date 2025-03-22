@@ -1,0 +1,128 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+}
+
+/* Container */
+.container {
+    max-width: 100%; /* Ensure it fits smaller screens */
+    margin: auto;
+    padding: 10px; /* Add padding for better spacing */
+}
+
+/* Article Grid */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px; /* Add gap for better spacing */
+}
+
+/* Article Card */
+.card {
+    flex: 1 1 calc(50% - 10px); /* Default to 2 cards per row */
+    margin: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+    background-color: white;
+    touch-action: manipulation; /* Improve touch responsiveness */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Image inside the card */
+.card-img-top {
+    height: 150px; /* Reduce height for smaller screens */
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+/* Card Body */
+.card-body {
+    padding: 10px; /* Reduce padding for smaller screens */
+    text-align: center;
+}
+
+/* Card Title */
+.card-title {
+    font-size: 14px; /* Adjust font size for readability */
+    font-weight: bold;
+    color: #333;
+}
+
+/* Read More Button */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 15px; /* Increase padding for touch-friendly buttons */
+    font-size: 14px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Ad Section */
+.ad-card {
+    flex: 1 1 100%;
+    text-align: center;
+    border: 2px dashed #ff9800;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #fff9e6;
+}
+
+.ad-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        flex: 1 1 calc(50% - 10px); /* 2 cards per row on smaller tablets */
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        flex: 1 1 100%; /* 1 card per row on mobile */
+    }
+
+    .btn-primary {
+        font-size: 12px; /* Adjust button font size for smaller screens */
+        padding: 8px 10px;
+    }
+
+    .card-title {
+        font-size: 12px; /* Adjust title font size for smaller screens */
+    }
+
+    .card-img-top {
+        height: 120px; /* Further reduce image height for mobile */
+    }
+}
+
+.footer {
+    background-color: #343a40;
+    color: #ffffff; /* Improve contrast for readability */
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    font-size: 12px; /* Adjust font size for smaller screens */
+}

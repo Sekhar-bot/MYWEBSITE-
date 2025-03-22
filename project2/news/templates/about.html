@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'about.css' %}">
+
+<div class="about-container">
+    <h1 class="about-title">ℹ️ About AI News Aggregator</h1>
+    <p class="about-description">
+        Welcome to AI News Aggregator, a project by Sekhar! 🚀 This platform collects and summarizes news 
+        articles from various sources using AI. Our goal is to provide a personalized, efficient, and accessible 
+        way for users to stay updated with the latest news.
+    </p>
+
+    <div class="about-features">
+        <h3>Features:</h3>
+        <ul>
+            <li>🧠 AI-powered news summarization</li>
+            <li>📰 Real-time news updates</li>
+            <li>🎯 Personalized news feed</li>
+            <li>👍👎 Like & Dislike functionality</li>
+        </ul>
+    </div>
+
+    <p class="about-footer">Created with ❤️ by Sekhar</p>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+/* Centering the content */
+.container {
+    max-width: 500px;
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling the buttons */
+.btn {
+    width: 150px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Add some spacing */
+.mt-5 {
+    margin-top: 80px !important;
+}
+
+/* Adjust button spacing */
+.btn + .btn {
+    margin-left: 10px;
+}

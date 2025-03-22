@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'profile.css' %}">
+
+<div class="profile-container">
+    <div class="profile-header">
+        <img src="{% static 'default-avatar.png' %}" class="profile-avatar" alt="Profile Avatar">
+        <h2>Welcome, {{ user.username }}!</h2>
+    </div>
+    
+    <div class="profile-info">
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Joined:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+        <p><strong>Total Articles Posted:</strong> {{ articles.count }}</p>
+        <div class="profile-buttons">
+            <a href="{% url 'home' %}" class="btn btn-secondary">🏠 Back to Home</a>
+        </div>
+    </div>
+    
+    <h3 class="mt-5 text-center">📝 Your Articles</h3>
+    
+    {% if articles %}
+    <div class="user-articles">
+        {% for article in articles %}
+        <div class="article-card">
+            {% if article.image and article.image.url %}
+            <img src="{{ article.image.url }}" alt="{{ article.title }}">
+            {% else %}
+            <img src="{% static 'default-article-image.png' %}" alt="Default Article Image">
+            {% endif %}
+            <div class="content">
+                <h5>{{ article.title }}</h5>
+                <p class="text-muted">
+                    🏷️ <strong>Category:</strong> {{ article.category|default:"Uncategorized" }} | 
+                    🕒 <strong>Published:</strong> {{ article.published_at|date:"M d, Y" }}
+                </p>
+                <p>{{ article.content|truncatewords:20 }}</p>
+                <div class="d-flex justify-content-between">
+                    {% if article.id %}
+                    <a href="{% url 'view_article' article.id %}" class="btn btn-primary btn-sm">📖 View</a>
+                    <form method="POST" action="{% url 'delete_article' article.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">🗑️ Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center text-muted">
+        <p>You haven't posted any articles yet.</p>
+        <a href="{% url 'create_article' %}" class="btn btn-primary mt-3">✏️ Create Your First Article</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
