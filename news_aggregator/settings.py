@@ -160,10 +160,21 @@ LOGOUT_REDIRECT_URL = '/'  # Redirects to login page after logout
 
 
 import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Ensure this line exists
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Only if you have a 'static' folder
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Make sure this is correct
+
+# Serve static files in deployment
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Ensure this folder exists
+]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 
 
